@@ -13,17 +13,17 @@ import java.util.Date
 data class CertificateBundleDTO(
     @ApiModelProperty(notes = "The unique Id of the CertificateBundle")
     val cerBundleId: Long,
-    @ApiModelProperty(notes = "The unique Id of the Seller")
+    @ApiModelProperty(notes = "The unique Id of the Seller", required = true)
     var sellerId: Long,
-    @ApiModelProperty(notes = "The unique Id of the Issuer")
+    @ApiModelProperty(notes = "The unique Id of the Issuer", required = true)
     val issuerId: Long,
-    @ApiModelProperty(notes = "The Energy Source of the Certificate Bundle")
+    @ApiModelProperty(notes = "The Energy Source of the Certificate Bundle", required = true)
     val energySource: EnergySource,
     @ApiModelProperty(notes = "The available Qty of the Certificate Bundle")
     val availableQty: Long,
     @ApiModelProperty(notes = "The actual Qty of the Certificate Bundle")
     val qty: Long,
-    @ApiModelProperty(notes = "The consumed Qty of the Certificate Bundle")
+    @ApiModelProperty(notes = "The consumed Qty of the Certificate Bundle", required = true)
     val consumedQty: Long,
     @ApiModelProperty(notes = "The issued date of the Certificate Bundle")
     val issuedDate: Date

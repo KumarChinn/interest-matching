@@ -4,7 +4,7 @@ import com.cerqlar.intmatch.model.common.EnergySource
 import com.cerqlar.intmatch.model.interest.Interest
 import com.cerqlar.intmatch.model.trader.Trader
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import java.util.Date
+import java.util.*
 import javax.persistence.*
 
 /**
@@ -26,7 +26,7 @@ data class CertificateBundle(
     val energySource: EnergySource,
     val qty: Long,
     var consumedQty: Long,
-    val issuedDate: Date,
+    val issuedDate: Date = Calendar.getInstance().time,
     @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinTable(
         name = "cerbundle_ints",

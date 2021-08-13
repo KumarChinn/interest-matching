@@ -12,16 +12,16 @@ import io.swagger.annotations.ApiModelProperty
 data class TraderDTO(
     @ApiModelProperty(notes = "The unique Id of the Trader")
     val traderId: Long,
-    @ApiModelProperty(notes = "The Role of the Trader, Example BUYER", example = "BUYER")
+    @ApiModelProperty(notes = "The Role of the Trader, Example BUYER", example = "BUYER", required = true)
     val traderRole: TraderRole,
-    @ApiModelProperty(notes = "The First Name of the Trader", example = "Kumar")
+    @ApiModelProperty(notes = "The First Name of the Trader", example = "Kumar", required = true)
     val firstName: String,
-    @ApiModelProperty(notes = "The Last Name of the Trader", example = "Chinnathambi")
+    @ApiModelProperty(notes = "The Last Name of the Trader", example = "Chinnathambi", required = true)
     val lastName: String,
-    @ApiModelProperty(notes = "The Email of the Trader", example = "kumarceg@cerqlar.com")
+    @ApiModelProperty(notes = "The Email of the Trader", example = "kumarceg@cerqlar.com", required = true)
     val email: String,
     @ApiModelProperty(notes = "The Contact Number of the Trader", example = "062304823222")
-    val contact: String,
+    val contact: String?,
     @ApiModelProperty(notes = "The Trading Company Name", example = "CerQlar")
-    val tradingCompanyName: String,
+    val tradingCompanyName: String?,
 )

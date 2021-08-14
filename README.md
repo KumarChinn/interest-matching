@@ -39,4 +39,4 @@ Bundles to specified Interest and closes the Interest
 
 ### Test coverage
  - Unit Tests
- - Integration Test
+ - Integration Tests

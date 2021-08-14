@@ -32,3 +32,7 @@ Bundles to specified Interest and closes the Interest
 ### REST API documentation
  - Swagger UI -> http://localhost:8080/swagger-ui/
  - Authentication -> Basic Authentication (request uname and password)
+
+### DB Access
+ - DB UI -> http://localhost:8080/intmatch-console
+ - Authentication -> Request for username and password

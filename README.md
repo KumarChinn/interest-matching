@@ -36,3 +36,7 @@ Bundles to specified Interest and closes the Interest
 ### DB Access
  - DB UI -> http://localhost:8080/intmatch-console
  - Authentication -> Request for username and password
+
+### Test coverage
+ - Unit Tests
+ - Integration Test

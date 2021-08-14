@@ -46,7 +46,7 @@ class InterestController(private val interestService: InterestService) {
         value = "Find Interest by Id",
         notes = "Provide the unique Interest Id to get the Interest"
     )
-    fun fetchOrgById(@ApiParam(value = "ID value for the Interest you need to retrieve")@PathVariable("intId") intId: Long): ResponseEntity<InterestDTO> {
+    fun fetchInterestById(@ApiParam(value = "ID value for the Interest you need to retrieve")@PathVariable("intId") intId: Long): ResponseEntity<InterestDTO> {
         val interestDTO = interestService.findInterestById(intId)
         if (ObjectUtils.isEmpty(interestDTO)) {
             throw ResourceNotFoundException("The resource Interest not found for id=$intId");

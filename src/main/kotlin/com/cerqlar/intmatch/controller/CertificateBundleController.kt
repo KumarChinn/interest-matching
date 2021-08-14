@@ -56,7 +56,7 @@ class CertificateBundleController(private val certificateBundleService: Certific
         value = "Find Certificate Bundle by Id",
         notes = "Provide the unique Certificate Bundle Id to get the Certificate Bundle"
     )
-    fun fetchOrgById(@ApiParam(value = "ID value for the Certificate Bundle you need to retrieve") @PathVariable("cerBundleId") cerBundleId: Long): ResponseEntity<CertificateBundleDTO> {
+    fun fetchCerBundleById(@ApiParam(value = "ID value for the Certificate Bundle you need to retrieve") @PathVariable("cerBundleId") cerBundleId: Long): ResponseEntity<CertificateBundleDTO> {
         val certificateBundleDTO = certificateBundleService.findCerBundleById(cerBundleId)
         if (ObjectUtils.isEmpty(certificateBundleDTO)) {
             throw ResourceNotFoundException("The resource Interest not found for id=$cerBundleId");

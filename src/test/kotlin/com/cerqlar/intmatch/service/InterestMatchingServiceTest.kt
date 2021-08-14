@@ -237,9 +237,9 @@ internal class InterestMatchingServiceTest {
 
         val intMatchRes = interestMatchingService.assignMatchingCerBundles(mockIntMatchReq)
 
-        val filterList = intMatchRes.assignedCerBundles.filter { it.availableQty == 0L }
+        val filterList = intMatchRes.assignedCerBundles.filter { it.availableQty == 100L }
         assertEquals(InterestStatus.CLOSED, intMatchRes.interest.status)
-        assertEquals(2, filterList.size)
+        assertEquals(1, filterList.size)
     }
 
     @Test

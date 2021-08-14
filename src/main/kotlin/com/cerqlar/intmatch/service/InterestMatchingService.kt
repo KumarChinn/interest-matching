@@ -157,11 +157,15 @@ class InterestMatchingService(
                 certificateBundleRepository.save(it)
             }
             //close interest status
-            closeInterest(interest)
+            val updatedInt = closeInterest(interest)
+            return IntMatchingResponse(
+                InterestMapper().fromModel(updatedInt),
+                responseList.map { cerBundle -> CertificateBundleMapper().fromModel(cerBundle) })
+        } else {
+            return IntMatchingResponse(
+                InterestMapper().fromModel(interest),
+                responseList.map { cerBundle -> CertificateBundleMapper().fromModel(cerBundle) })
         }
-        return IntMatchingResponse(
-            InterestMapper().fromModel(interest),
-            responseList.map { cerBundle -> CertificateBundleMapper().fromModel(cerBundle) })
     }
 
     /**
@@ -204,8 +208,9 @@ class InterestMatchingService(
     /**
      * Close the Interest
      */
-    private fun closeInterest(interest: Interest) {
+    private fun closeInterest(interest: Interest): Interest {
         val updatedInt = interest.copy(status = InterestStatus.CLOSED)
         interestRepository.save(updatedInt)
+        return updatedInt;
     }
 }

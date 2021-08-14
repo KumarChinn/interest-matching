@@ -45,7 +45,7 @@ internal class TraderControllerTest {
 
     @Test
     @Throws(Exception::class)
-    fun accessProtected() {
+    fun `when no auth provided, the access is protected`() {
         mockMvc.perform(get("/")).andExpect(status().isUnauthorized).andReturn()
     }
 

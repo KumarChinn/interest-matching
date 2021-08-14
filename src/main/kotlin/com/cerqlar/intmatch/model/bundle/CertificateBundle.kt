@@ -19,13 +19,13 @@ data class CertificateBundle(
     val cerBundleId: Long,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sellerId")
-    var seller: Trader?,
+    val seller: Trader?,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "issuerId")
-    var issuer: Trader?,
+    val issuer: Trader?,
     val energySource: EnergySource,
     val qty: Long,
-    var consumedQty: Long,
+    val consumedQty: Long,
     val issuedDate: Date = Calendar.getInstance().time,
     @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinTable(
@@ -34,5 +34,5 @@ data class CertificateBundle(
         inverseJoinColumns = [JoinColumn(name = "int_id", referencedColumnName = "intId")]
     )
     @JsonIgnoreProperties("assigned_ints")
-    var assignedInts: List<Interest> = mutableListOf()
+    val assignedInts: List<Interest> = mutableListOf()
 )

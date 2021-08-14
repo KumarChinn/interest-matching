@@ -17,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.RequestPostProcessor
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 /**
@@ -40,13 +42,17 @@ internal class InterestMatchingControllerTest {
     }
     val intMatchJsonReq = ObjectMapper().writeValueAsString(mockIntMatchingRequest)
 
+    fun getLogIn(): RequestPostProcessor {
+        return SecurityMockMvcRequestPostProcessors.httpBasic("cerqlaradmin", "cerqlaradmin")
+    }
+
     @Test
     fun `when a seller and interest id is given to get, return the match`() {
         val mockIntMatchingResponse = mockk<IntMatchingResponse>(relaxed = true)
         every { mockInterestMatchingService.findMatchingCerBundles(mockIntMatchingRequest) } returns mockIntMatchingResponse
         val intMatchJson = ObjectMapper().writeValueAsString(mockIntMatchingResponse)
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/intmatch-api/v1/int-match")
+            MockMvcRequestBuilders.get("/intmatch-api/v1/int-match").with(getLogIn())
                 .content(intMatchJsonReq)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk)
@@ -62,7 +68,7 @@ internal class InterestMatchingControllerTest {
         every { mockInterestMatchingService.assignMatchingCerBundles(mockIntMatchingRequest) } returns mockIntMatchingResponse
         val intMatchJson = ObjectMapper().writeValueAsString(mockIntMatchingResponse)
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/intmatch-api/v1/int-match")
+            MockMvcRequestBuilders.post("/intmatch-api/v1/int-match").with(getLogIn())
                 .content(intMatchJsonReq)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isAccepted)

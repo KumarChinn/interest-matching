@@ -2,6 +2,7 @@ package com.cerqlar.intmatch.service
 
 import com.cerqlar.intmatch.model.bundle.CertificateBundle
 import com.cerqlar.intmatch.model.bundle.CertificateBundleDTO
+import com.cerqlar.intmatch.model.common.InterestStatus
 import com.cerqlar.intmatch.model.common.TraderRole
 import com.cerqlar.intmatch.repository.CertificateBundleRepository
 import com.cerqlar.intmatch.repository.TraderRepository
@@ -34,9 +35,8 @@ class CertificateBundleService(
             throw ResourceNotFoundException("Could not create CertificateBundle, There is no Issuer found found for the id=${cerBundleDTO.issuerId}");
         }
         val certificateBundle = CertificateBundleMapper().toModel(cerBundleDTO)
-        certificateBundle.seller = seller.get()
-        certificateBundle.issuer = issuer.get()
-        val savedCerBundle = certificateBundleRepository.save(certificateBundle)
+        val updatedCerBundle = certificateBundle.copy(seller = seller.get(), issuer = issuer.get())
+        val savedCerBundle = certificateBundleRepository.save(updatedCerBundle)
         if (ObjectUtils.isEmpty(savedCerBundle)) {
             throw EntityNotSavedException("The CertificateBundle entity is not saved");
         }

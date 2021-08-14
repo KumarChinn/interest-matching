@@ -5,8 +5,8 @@ spring:
       path: /intmatch-console
   datasource:
     url: jdbc:h2:mem:intmatch-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: admin
-    password: admin
+    username: cerqlaradmin
+    password: cerqlaradmin
   jpa:
     show-sql: true
     hibernate:

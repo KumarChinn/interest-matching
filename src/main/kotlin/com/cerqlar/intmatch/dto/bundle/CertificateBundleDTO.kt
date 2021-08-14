@@ -14,7 +14,7 @@ data class CertificateBundleDTO(
     @ApiModelProperty(notes = "The unique Id of the CertificateBundle")
     val cerBundleId: Long,
     @ApiModelProperty(notes = "The unique Id of the Seller", required = true)
-    var sellerId: Long,
+    val sellerId: Long,
     @ApiModelProperty(notes = "The unique Id of the Issuer", required = true)
     val issuerId: Long,
     @ApiModelProperty(notes = "The Energy Source of the Certificate Bundle", required = true)

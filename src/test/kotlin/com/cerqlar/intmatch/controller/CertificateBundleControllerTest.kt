@@ -12,9 +12,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.RequestPostProcessor
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.*
 
@@ -37,12 +39,16 @@ internal class CertificateBundleControllerTest {
     }
     val cerBunJson = ObjectMapper().writeValueAsString(mockCerBundleDTO)
 
+    fun getLogIn(): RequestPostProcessor {
+        return SecurityMockMvcRequestPostProcessors.httpBasic("cerqlaradmin", "cerqlaradmin")
+    }
+
     @Test
     fun `when a new cerbundle created, there is an created response`() {
         every { mockCertificateBundleService.createNewCerBundle(any()) } returns mockCerBundleDTO
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/intmatch-api/v1/cerbundles")
+            MockMvcRequestBuilders.post("/intmatch-api/v1/cerbundles").with(getLogIn())
                 .content(cerBunJson)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isCreated)
@@ -57,7 +63,7 @@ internal class CertificateBundleControllerTest {
         every { mockCertificateBundleService.findCerBundleById(id) } returns mockCerBundleDTO
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/intmatch-api/v1/cerbundles/1")
+            MockMvcRequestBuilders.get("/intmatch-api/v1/cerbundles/1").with(getLogIn())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn()
@@ -74,7 +80,7 @@ internal class CertificateBundleControllerTest {
         every { mockCertificateBundleService.getAllCerBundlesBySeller(1L) } returns expectedCerBundles
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/intmatch-api/v1/cerbundles/cerbundle")
+            MockMvcRequestBuilders.get("/intmatch-api/v1/cerbundles/cerbundle").with(getLogIn())
                 .param("sellerId", "1")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk)

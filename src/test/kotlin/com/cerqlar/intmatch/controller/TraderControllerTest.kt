@@ -10,15 +10,16 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.RequestPostProcessor
 
 
 /**
@@ -38,12 +39,22 @@ internal class TraderControllerTest {
     }
     val traderJson = ObjectMapper().writeValueAsString(mockTraderDTO)
 
+    fun getLogIn(): RequestPostProcessor {
+        return httpBasic("cerqlaradmin", "cerqlaradmin")
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun accessProtected() {
+        mockMvc.perform(get("/")).andExpect(status().isUnauthorized).andReturn()
+    }
+
     @Test
     fun `when a new trader created, there is an ok response`() {
         every { mockTraderService.createNewTrader(any()) } returns mockTraderDTO
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/intmatch-api/v1/traders")
+            MockMvcRequestBuilders.post("/intmatch-api/v1/traders").with(getLogIn())
                 .content(traderJson)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isCreated)
@@ -59,7 +70,7 @@ internal class TraderControllerTest {
         every { mockTraderService.findTraderById(id) } returns mockTraderDTO
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/intmatch-api/v1/traders/1")
+            get("/intmatch-api/v1/traders/1").with(getLogIn())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
             .andExpect(content().json(traderJson))
@@ -75,7 +86,7 @@ internal class TraderControllerTest {
         val tradersJson = ObjectMapper().writeValueAsString(expectedTraders)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/intmatch-api/v1/traders")
+            get("/intmatch-api/v1/traders").with(getLogIn())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
             .andExpect(content().json(tradersJson))

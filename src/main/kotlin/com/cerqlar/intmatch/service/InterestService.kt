@@ -30,10 +30,8 @@ class InterestService(
             throw ResourceNotFoundException("Could not create Interest, There is no Buyer found found for the id=" + interestDTO.intBuyerId);
         }
         val interest = InterestMapper().toModel(interestDTO)
-        interest.status = InterestStatus.OPEN
-        interest.intBuyer = trader.get()
-
-        val intSaved = interestRepository.save(interest)
+        val updatedInt = interest.copy(status = InterestStatus.OPEN,intBuyer = trader.get())
+        val intSaved = interestRepository.save(updatedInt)
         if (ObjectUtils.isEmpty(intSaved)) {
             throw EntityNotSavedException("The Interest entity is not saved");
         }

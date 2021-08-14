@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.RequestPostProcessor
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 /**
@@ -35,12 +37,16 @@ internal class InterestControllerTest {
     }
     val intJson = ObjectMapper().writeValueAsString(mockInterestDTO)
 
+    fun getLogIn(): RequestPostProcessor {
+        return SecurityMockMvcRequestPostProcessors.httpBasic("cerqlaradmin", "cerqlaradmin")
+    }
+
     @Test
     fun `when a new interest created, there is an created response`() {
         every { mockInterestService.createNewInterest(any()) } returns mockInterestDTO
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/intmatch-api/v1/interests")
+            MockMvcRequestBuilders.post("/intmatch-api/v1/interests").with(getLogIn())
                 .content(intJson)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isCreated)
@@ -56,7 +62,7 @@ internal class InterestControllerTest {
         every { mockInterestService.findInterestById(id) } returns mockInterestDTO
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/intmatch-api/v1/interests/1")
+            MockMvcRequestBuilders.get("/intmatch-api/v1/interests/1").with(getLogIn())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().json(intJson))
@@ -72,7 +78,7 @@ internal class InterestControllerTest {
         val tradersJson = ObjectMapper().writeValueAsString(expectedInts)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/intmatch-api/v1/interests")
+            MockMvcRequestBuilders.get("/intmatch-api/v1/interests").with(getLogIn())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().json(tradersJson))

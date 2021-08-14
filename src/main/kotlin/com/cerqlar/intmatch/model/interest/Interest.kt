@@ -18,12 +18,12 @@ data class Interest(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val intId: Long,
     val energySource: EnergySource,
-    var status: InterestStatus?,
+    val status: InterestStatus?,
     val qty: Long,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyerId")
-    var intBuyer: Trader?,
+    val intBuyer: Trader?,
     @ManyToMany(mappedBy = "assignedInts")
     @JsonIgnoreProperties("assignedInts")
-    var cerBundles: List<CertificateBundle> = mutableListOf()
+    val cerBundles: List<CertificateBundle> = mutableListOf()
 )

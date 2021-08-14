@@ -94,11 +94,15 @@ class InterestMatchingService(
         if (!ObjectUtils.isEmpty(matchedList)) {
             var intQty = interest.qty
             matchedList.forEach {
-                responseList.add(it)
                 if ("post".equals(requestType)) {
-                    if (availableQty(it) <= intQty) consumeQty(it, it.qty)
+                    if (availableQty(it) <= intQty) {
+                        val updatedCerBundle =
+                            it.copy(assignedInts = mutableListOf(interest), consumedQty = it.consumedQty + it.qty)
+                        responseList.add(updatedCerBundle)
+                    }
                     intQty -= it.qty
-                    it.assignedInts = mutableListOf(interest)
+                } else {
+                    responseList.add(it)
                 }
             }
         } else {
@@ -106,23 +110,33 @@ class InterestMatchingService(
             val matchingCerBundle = cerBundleList.firstOrNull { availableQty(it) > interest.qty }
             if (matchingCerBundle != null) {
                 if ("post".equals(requestType)) {
-                    consumeQty(matchingCerBundle, interest.qty)
-                    matchingCerBundle.assignedInts = mutableListOf(interest)
+                    val updatedCerBundle = matchingCerBundle.copy(
+                        assignedInts = mutableListOf(interest),
+                        consumedQty = matchingCerBundle.consumedQty + interest.qty
+                    )
+                    responseList.add(updatedCerBundle)
+                } else {
+                    responseList.add(matchingCerBundle)
                 }
-                responseList.add(matchingCerBundle)
             } else {
                 //Find the least number of CertificateBundles to fulfill the interest
                 var intQty = interest.qty
                 cerBundleList.filter { availableQty(it) > 0 }.forEach {
                     if (intQty > 0) {
-                        responseList.add(it)
                         if ("post".equals(requestType)) {
-                            it.assignedInts = mutableListOf(interest)
+                            val qtyToConsume: Long
                             if (availableQty(it) > intQty) {
-                                consumeQty(it, intQty)
+                                qtyToConsume = intQty
                             } else {
-                                consumeQty(it, it.qty)
+                                qtyToConsume = it.qty
                             }
+                            val updatedCerBundle = it.copy(
+                                assignedInts = mutableListOf(interest),
+                                consumedQty = it.consumedQty + qtyToConsume
+                            )
+                            responseList.add(updatedCerBundle)
+                        } else {
+                            responseList.add(it)
                         }
                     }
                     intQty -= it.qty
@@ -188,18 +202,10 @@ class InterestMatchingService(
     }
 
     /**
-     * Update the consumedQty
-     */
-    private fun consumeQty(cerBundle: CertificateBundle, qtyToConsume: Long) {
-        cerBundle.consumedQty = cerBundle.consumedQty + qtyToConsume
-    }
-
-    /**
      * Close the Interest
      */
     private fun closeInterest(interest: Interest) {
-        interest.status = InterestStatus.CLOSED
-        interestRepository.save(interest)
+        val updatedInt = interest.copy(status = InterestStatus.CLOSED)
+        interestRepository.save(updatedInt)
     }
-
 }
